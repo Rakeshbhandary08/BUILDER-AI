@@ -15,14 +15,12 @@ const AuthPage = ({mode}) => {
      setLoading(true);
 
      try{
-
       if(mode === "login"){
         await login(email,password)
       }
       else{
         await register(name,email,password)
       }
-      
      }
      catch(err){
       setError(err.message || (mode === "login" ? "Invalid email or password" : "Registeration Failed"))
