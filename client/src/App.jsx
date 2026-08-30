@@ -7,10 +7,14 @@ import Loading from "./components/Loading";
 import BuilderPage from "./pages/BuilderPage";
 import PreviewPage from "./pages/PreviewPage";
 import NotFound from "./components/NotFound";
+import { Toaster } from "react-hot-toast";
 
 const App = () => {
   return (
-    <Routes>
+
+    <>
+     <Toaster/>
+     <Routes>
       {/* Login Routes */}
       <Route element={<GuestLayout/>}>
         <Route path="/register" element={<AuthPage mode="register" />}></Route>
@@ -26,6 +30,8 @@ const App = () => {
 
       <Route path="*" element={<NotFound/>}></Route>
     </Routes>
+    </>
+   
   );
 };
 

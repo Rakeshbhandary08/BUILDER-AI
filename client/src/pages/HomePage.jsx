@@ -36,8 +36,12 @@ const HomePage = () => {
              <p className='text-center text-sm md:text-base max-w-xl mt-4 text-white/65 leading-relaxed'>Describe your idea and watch AI design, Structure and launch your website instantly. No coding required.</p>
 
              {/* Prompt input with glassmorphic effect and variant */}
-             <div>
-               <PromptInput/>
+             <div className='w-full mt-6'>
+               <PromptInput 
+               onSubmit={()=>{}} 
+                loading={false}
+                placeholder='Create a portfolio website'
+                autoFocus />
              </div>
 
            </div>
