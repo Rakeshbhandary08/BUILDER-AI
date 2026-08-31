@@ -15,7 +15,7 @@ export function AppContextProvider({children}){
 
     //States for Aleady build projects
     const [projects,setProjects]=useState([]);
-    const [loadingProjects,setLoadingProjects]=useState(true);
+    const [loadingProjects,setLoadingProjects]=useState(false);
     const [activeProject,setActiveProject]=useState(null);
     const [loadingActiveProject,setLoadingActiveProject]=useState(true);
     const [chatLoading,setChatLoading]=useState(false);
@@ -77,7 +77,8 @@ export function AppContextProvider({children}){
        if(!user) return;
        try{
          const {data}=await api.get("/api/projects")
-         setProjects(data)
+         setProjects(data);
+         console.log(data)
        }
        catch(err){
          console.log("Failed to list projects",err)
@@ -166,11 +167,11 @@ export function AppContextProvider({children}){
          if(!user) return;
          //Logic for deletion
          try{
-           await api.delete(`api/projects/${id}`);
-           setProjects((prev)=>prev.filter((p)=>p._id !==id))
+           await api.delete(`/api/projects/${id}`);
+           setProjects((prev)=>prev.filter((p)=>p._id !== id))
 
           // If the deleted project is currently open in the active workspace, clear it
-          if(activeProject._id === id){
+          if(activeProject?._id === id){
             setActiveFile("");
             navigate("/");
           }
@@ -200,7 +201,13 @@ export function AppContextProvider({children}){
     }
 
     return(
-    <AppContext.Provider value={{user,loadingUser,login,register}}>
+    <AppContext.Provider value={{user,
+       loadingUser,login,logout,register,projects,
+       loadingProjects,activeProject,loadingActiveProject,
+       generatingProject,activeFile,showCode,setActiveFile,
+       setShowCode,loadProjects,loadProject,handleGenerate,
+       handleDelete}}>
+
         {children}
     </AppContext.Provider>
     )
