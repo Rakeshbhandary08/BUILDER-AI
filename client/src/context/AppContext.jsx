@@ -184,6 +184,29 @@ export function AppContextProvider({children}){
        },[user]
     )
 
+    //FUnction to handle Chatting things with AI
+    const handleChat=useCallback(
+      async (prompt)=>{
+        if(!user || !activeProject) return;
+
+        setChatLoading(true);
+        try{
+          const {data}=await api.post(`/api/projects/${activeProject._id}/chat`,{prompt})
+
+          setActiveFile(data);
+          if(data.errors && data.errors.length > 0){
+            toast.error(`${data.errors.length} revision patch(es) failed`)
+          }else{
+            toast.success(`Updated to version ${data.version}`)
+          }
+        }
+        catch(err){
+           console.log("Revision request failed:", err);
+           toast.error(err?.response?.data?.error || 'Revision request failed')
+        }finally{setChatLoading(false);}
+      },[activeProject,user]
+    )
+
     //Function for Registeration
      const register=async(name,email,password)=>{
         try{
@@ -206,7 +229,7 @@ export function AppContextProvider({children}){
        loadingProjects,activeProject,loadingActiveProject,
        generatingProject,activeFile,showCode,setActiveFile,
        setShowCode,loadProjects,loadProject,handleGenerate,
-       handleDelete}}>
+       handleDelete,chatLoading,handleChat}}>
 
         {children}
     </AppContext.Provider>

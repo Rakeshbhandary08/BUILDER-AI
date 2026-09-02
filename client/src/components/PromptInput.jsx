@@ -11,7 +11,7 @@ const PromptInput = ({
   placeholder = "Describe the website you want to build...",
   large = false,
   autoFocus = false,
-  variant = "glass",
+  variant = "default",
 }) => {
 
   const [value, setValue] = useState("");

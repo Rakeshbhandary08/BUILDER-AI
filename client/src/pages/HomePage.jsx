@@ -51,6 +51,7 @@ const HomePage = () => {
              {/* Prompt input with glassmorphic effect and variant */}
              <div className='w-full mt-6'>
                <PromptInput 
+               variant='glass'
                onSubmit={handleGenerate} 
                 loading={generatingProject}
                 placeholder='Create a portfolio website'

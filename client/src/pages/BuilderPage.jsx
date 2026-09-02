@@ -3,6 +3,8 @@ import { useAppContext } from "../context/AppContext";
 import { useNavigate, useParams } from "react-router-dom";
 import Loading from "../components/Loading";
 import BuilderHeader from "../components/BuilderHeader";
+import { FolderTreeIcon, MessageSquareIcon } from "lucide-react";
+import ChatPanel from "../components/ChatPanel";
 
 const BuilderPage = () => {
   const { id } = useParams();
@@ -20,7 +22,11 @@ const BuilderPage = () => {
     setShowCode,
     loadProject,
     logout,
+    chatLoading,handleChat
+
   } = useAppContext();
+
+
 
   useEffect(() => {
     if (id && activeProject?._id !== id) {
@@ -40,10 +46,10 @@ const BuilderPage = () => {
 
   }
 
-  //Function for Handling the downlaod of the code
   const handleDownload=()=>{
 
   }
+
 
   // useEffect(()=>{
   //   if(!id || !activeProject) return;
@@ -61,7 +67,7 @@ const BuilderPage = () => {
   }
 
   return (
-    <div>
+    <div className="h-screen flex flex-col overflow-hidden">
       {/* TOP BAR HEADER */}
       <BuilderHeader
         projectName={activeProject.name}
@@ -75,8 +81,39 @@ const BuilderPage = () => {
         onDownload={handleDownload}
         onBack={()=>navigate("/")}
         onLogout={logout}
+         />
         
-      />
+        {/* Main Layout */}
+        <div className="flex-1 flex min-h-0 overflow-hidden">
+          {/* Left Sidebar */}
+
+          <div className="w-[320px] border-r border-zinc-200 bg-white flex flex-col shrink-0 ">
+             {/* SIdebar Tabs */}
+             <div className="flex border-b border-zinc-100">
+              <button onClick={()=>setLeftTab("Chat")}
+              className={`flex-1 flex items-center  justify-center gap-1.5 py-2.5 text-sm font-medium cursor-pointer ${leftTab === "Chat" ? "text-zinc-900 border-b-2 border-zinc-900" : "text-zinc-400 hover:text-zinc-700"}`}>
+               <MessageSquareIcon size={13}/> Chat
+              </button>
+              <button onClick={()=>setLeftTab("Files")}
+              className={`flex-1 flex items-center  justify-center gap-1.5 py-2.5 text-sm font-medium cursor-pointer ${leftTab === "Files" ? "text-zinc-900 border-b-2 border-zinc-900" : "text-zinc-400 hover:text-zinc-700"}`}>
+               <FolderTreeIcon size={13}/> Files
+              </button>
+             </div>
+
+             {/* SideBar content */}
+             <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
+              {
+                leftTab === "Chat" ? (<ChatPanel messages={activeProject.messages} onSend={handleChat} loading={chatLoading}/> ): (<div>File Explorer</div>)
+              }
+             </div>
+             
+          </div>
+
+          {/* Preview / Code Area */}
+          <div>
+           
+          </div>
+        </div>
     </div>
   );
 };
