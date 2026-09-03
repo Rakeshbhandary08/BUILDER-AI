@@ -5,6 +5,7 @@ import Loading from "../components/Loading";
 import BuilderHeader from "../components/BuilderHeader";
 import { FolderTreeIcon, MessageSquareIcon } from "lucide-react";
 import ChatPanel from "../components/ChatPanel";
+import FileExplorer from "../components/FileExplorer";
 
 const BuilderPage = () => {
   const { id } = useParams();
@@ -69,7 +70,7 @@ const BuilderPage = () => {
   return (
     <div className="h-screen flex flex-col overflow-hidden">
       {/* TOP BAR HEADER */}
-      <BuilderHeader
+        <BuilderHeader
         projectName={activeProject.name}
         version={activeProject.version}
         showCode={showCode}
@@ -85,8 +86,8 @@ const BuilderPage = () => {
         
         {/* Main Layout */}
         <div className="flex-1 flex min-h-0 overflow-hidden">
-          {/* Left Sidebar */}
 
+          {/* Left Sidebar */}
           <div className="w-[320px] border-r border-zinc-200 bg-white flex flex-col shrink-0 ">
              {/* SIdebar Tabs */}
              <div className="flex border-b border-zinc-100">
@@ -103,7 +104,7 @@ const BuilderPage = () => {
              {/* SideBar content */}
              <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
               {
-                leftTab === "Chat" ? (<ChatPanel messages={activeProject.messages} onSend={handleChat} loading={chatLoading}/> ): (<div>File Explorer</div>)
+                leftTab === "Chat" ? (<ChatPanel messages={activeProject.messages} onSend={handleChat} loading={chatLoading}/> ): (<FileExplorer files={activeProject.files} activeFile={activeFile} onFileSelect={(path)=>{setActiveFile(path);setShowCode(true)}}/>)
               }
              </div>
              
