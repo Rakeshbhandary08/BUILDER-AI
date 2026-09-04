@@ -14,6 +14,7 @@ function buildTree(paths){
          const isLast=i===parts.length - 1;
          const fullPath="/" + parts.slice(0,i+1).join("/")
          let existing=current.find((n)=>n.name === name)
+         
          if(!existing){
             existing={
                 name,
@@ -26,7 +27,6 @@ function buildTree(paths){
          current=existing.children
        }
     }
-
     return root;
 }
 
@@ -37,7 +37,6 @@ function getFileIcon(name){
     if(name.endsWith(".json")) return <FileTextIcon size={14} className='text-emerald-500'/>
 
     return <FileTextIcon size={14} className='text-zinc-400'/>
-
 }
 
 //Another function of File tree
