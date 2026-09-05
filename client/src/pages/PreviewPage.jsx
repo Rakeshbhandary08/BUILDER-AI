@@ -2,7 +2,7 @@ import React from 'react'
 
 const PreviewPage = () => {
   return (
-    <div>PreviewPage</div>
+    <div>PreviewfffPagee</div>
   )
 }
 
