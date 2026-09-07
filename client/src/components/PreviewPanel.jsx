@@ -1,11 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import {SandpackProvider, useSandpack} from '@codesandbox/sandpack-react'
+import {SandpackCodeEditor, SandpackLayout, SandpackPreview, SandpackProvider, useSandpack} from '@codesandbox/sandpack-react'
 import { detectDependencies } from '../utils/sandpackUtils';
 import { useAppContext } from '../context/AppContext';
+import SandpackErrorMonitor from './SandpackErrorMonitor';
 
 
 
-function sandpackFileWatcher({onLiveFileChange}){
+function SandpackFileWatcher({onLiveFileChange}){
     const {sandpack} =useSandpack();
     const {files} =sandpack;
     const {activeProject,updateProjectFiles}=useAppContext()
@@ -43,25 +44,25 @@ function sandpackFileWatcher({onLiveFileChange}){
 }
 
 
-const PreviewPanel = ({activeFile,showCode}) => {
+const PreviewPanel = ({project,activeFile,showCode}) => {
 
-    const project = {
-  _id: "proj_abc123",
-  version: 1,
-  name: "My AI Web App",
-  files: {
-    "/App.js": `export default function App() {
-  return <h1>Hello from Sandpack!</h1>;
-}`,
-    "/index.js": `import React from 'react';
-import { createRoot } from 'react-dom/client';
-import App from './App';
+//     const project = {
+//   _id: "proj_abc123",
+//   version: 1,
+//   name: "My AI Web App",
+//   files: {
+//     "/App.js": `export default function App() {
+//   return <h1>Hello from Sandpack!</h1>;
+// }`,
+//     "/index.js": `import React from 'react';
+// import { createRoot } from 'react-dom/client';
+// import App from './App';
 
-const root = createRoot(document.getElementById('root'));
-root.render(<App />);`,
-    "/styles.css": `body { font-family: sans-serif; padding: 20px; }`
-  }
-};
+// const root = createRoot(document.getElementById('root'));
+// root.render(<App />);`,
+//     "/styles.css": `body { font-family: sans-serif; padding: 20px; }`
+//   }
+// };
     
 
     const [showErrorOverlay,setShowErrorOverlay]=useState(true);
@@ -73,6 +74,23 @@ root.render(<App />);`,
       setPrevProjectKey(currentKey);
       setLiveFiles(project.files);
     }
+
+   //Function 
+
+
+   const handleLiveFilesChange=(newFiles)=>{  //{"App.jsx":.....,"Index.css":font,color..., "App.css":....}
+       setLiveFiles((prev)=>{
+        let changed=false;
+        for( const [p,code] of Object.entries(newFiles)){
+            if(prev[p] !== code){
+                //File has been updated/changed
+                changed=true;
+                break;
+            }
+        }
+        return changed ? newFiles : prev;
+       })
+   }
 
   //Convert liveFiles to Sandpack format
   const sandpackFiles=useMemo(()=>{
@@ -90,19 +108,20 @@ root.render(<App />);`,
 
   // Detect dependencies from import statements using liveFiles
   const dependencies=useMemo(()=>{
-    return detectDependencies()
+    return detectDependencies(liveFiles)
   },[liveFiles])
 
   return (
-    <div>
-        <SandpackProvider key={project._id} template='react'
+    <div className='h-full w-full overflow-hidden'>
+        <SandpackProvider style={{height:"100%"}} key={project._id} template='react'
          files={sandpackFiles}
          customSetup={{dependencies}} 
          options={{
-            externalResources:[
-                "https://cdn.tailwindcss.com",
-                "https://cdnjs.cloudFlare.com.ajax/libs/font-awesome/6.4.0/css/all.min.css"
-            ],
+            externalResources: [
+                        "https://cdn.tailwindcss.com",
+                        // FIX 2: Fixed FontAwesome URL syntax typo
+                        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+                    ],
             classes:{
                 "sp-wrapper":"sp-wrapper",
                 "sp-layout":"sp-layout",
@@ -124,7 +143,7 @@ root.render(<App />);`,
                 errorSurface:"#fef2f2"
             },
             font:{
-                body:"'Urbanisht',system-ui,-apple-system,sans-serif",
+                body:"'Urbanist',system-ui,-apple-system,sans-serif",
                 mono:"'Geist Mono',ui-monospace,monospace",
                 size:"13px",
                 lineHeight:"1.6",
@@ -132,7 +151,16 @@ root.render(<App />);`,
          }} >
 
           
+          <SandpackFileWatcher onLiveFileChange={handleLiveFilesChange}/>
+          <SandpackErrorMonitor onErrorChange={setShowErrorOverlay}/>
 
+          <SandpackLayout style={{height:"100%",border:"none",borderRadius:0,background:"transparent"}}>
+                {showCode && (<SandpackCodeEditor showTabs showLineNumbers showInlineErrors wrapContent style={{height:"100%",flex:1,minWidth:0}}/>)}
+
+                <SandpackPreview showNavigator={false} showRefreshButton showOpenInCodeSandbox={false} showSandpackErrorOverlay={showErrorOverlay} 
+                style={{ height:"100%",flex:showCode ? 1 : 2,minWidth:0}}/>
+          </SandpackLayout>
+          
         </SandpackProvider>
     </div>
   )
