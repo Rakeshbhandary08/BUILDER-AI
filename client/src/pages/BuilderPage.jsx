@@ -8,11 +8,16 @@ import ChatPanel from "../components/ChatPanel";
 import FileExplorer from "../components/FileExplorer";
 import PreviewPanel from "../components/PreviewPanel";
 import AgentProgressDashboard from "../components/AgentProgressDashboard";
+import PublishModal from "../components/PublishModal";
+import toast from "react-hot-toast";
+import api from "../api/api";
+import { exportProjectZip } from "../utils/exportProject";
 
 const BuilderPage = () => {
+
   const { id } = useParams();
   const navigate = useNavigate();
-  const [leftTab, setLeftTab] = useState("chat");
+  const [leftTab, setLeftTab] = useState("Chat");
   const [publishing, setPublishing] = useState(false);
   const [publishUrl, setPublishUrl] = useState(null);
 
@@ -45,12 +50,27 @@ const BuilderPage = () => {
   }
 
   //Function for Handling Publish the Project
-  const handlePublish=()=>{
+  const handlePublish=async()=>{
+        if(!id) return;
+        setPublishing(true);
+        try{
+          await api.post(`/api/projects/${id}/publish`);
+          const url=`${window.location.origin}/publish/${id}`
+          setPublishUrl(url);
+          toast.success("Website published successfully 🎉")
+        }
+        catch(err){
+           console.log("Published failed:", err);
+           toast.error(err?.response?.data?.error || "Publish failed")
+        }finally{
+          setPublishing(false)
+        }
 
   }
 
   const handleDownload=()=>{
-
+      if(!activeProject) return;
+      exportProjectZip(activeProject)
   }
 
 
@@ -118,6 +138,8 @@ const BuilderPage = () => {
             activeProject.status === "failed" ? (<AgentProgressDashboard project={activeProject}/>) : (<PreviewPanel project={activeProject} activeFile={activeFile} showCode={showCode}/>)}
           </div>
         </div>
+
+        {publishUrl && <PublishModal publishUrl={publishUrl} onClose={()=>setPublishUrl(null)}/>}
     </div>
   );
 };

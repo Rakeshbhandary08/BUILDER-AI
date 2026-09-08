@@ -8,6 +8,8 @@ import BuilderPage from "./pages/BuilderPage";
 import PreviewPage from "./pages/PreviewPage";
 import NotFound from "./components/NotFound";
 import { Toaster } from "react-hot-toast";
+import PublishModal from "./components/PublishModal";
+import PublishPage from "./pages/PublishPage";
 
 const App = () => {
   return (
@@ -27,6 +29,9 @@ const App = () => {
         <Route path="/builder/:id" element={<BuilderPage/>} />
         <Route path="/preview/:id" element={<PreviewPage/>} />
       </Route>
+
+      {/* Public Routes */}
+      <Route path="/publish/:id" element={<PublishPage/>}/>
 
       <Route path="*" element={<NotFound/>}></Route>
     </Routes>
