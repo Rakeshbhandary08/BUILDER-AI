@@ -35,7 +35,6 @@ const BuilderPage = () => {
   } = useAppContext();
 
 
-
   useEffect(() => {
     if (id && activeProject?._id !== id) {
       loadProject(id);
@@ -72,17 +71,6 @@ const BuilderPage = () => {
       if(!activeProject) return;
       exportProjectZip(activeProject)
   }
-
-
-  // useEffect(()=>{
-  //   if(!id || !activeProject) return;
-  //   if(activeProject.status === "pending" || activeProject.status === "generating"){
-  //     const interval=setInterval(()=>{
-  //         loadProject(id,true)
-  //     },1500)
-  //     return ()=>clearInterval(interval)
-  //   }
-  // },[id,loadProject,activeProject])
 
   //Return the loading component
   if (loadingActiveProject || !activeProject || activeProject._id !== id) {
