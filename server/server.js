@@ -7,7 +7,11 @@ import { connectToDatabase } from "./config/db.js";
 const app=express();
 
 //Use the middleware
-app.use(cors({origin:process.env.ORIGINS.split(","),credentials:true}))
+const allowedOrigins = process.env.ORIGINS
+  ? process.env.ORIGINS.split(",")
+  : ["http://localhost:5173"];
+
+app.use(cors({origin:allowedOrigins,credentials:true}))
 app.use(express.json())
 app.use(cookieParser())
 
@@ -23,7 +27,16 @@ app.use((err,_req,res,_next)=>{
 
 const port=process.env.PORT || 4000;
 
-app.listen(port,()=>{
+async function startServer(){
+    try {
+        await connectToDatabase();
+        app.listen(port,()=>{console.log(`Server is running at http://localhost:${port};`)})
+    } catch (error) {
+       console.log("Failed to database",error) ;
+       process.exit(1)
+    }
     console.log(`Server is running at http://localhost:${port}`);
-    connectToDatabase();
-})
+    
+}
+
+startServer()
