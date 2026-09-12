@@ -3,8 +3,11 @@ import "dotenv/config";
 import cors from "cors";
 import cookieParser from "cookie-parser"
 import { connectToDatabase } from "./config/db.js";
+import router from "./routes/authRoutes.js";
 
 const app=express();
+
+app.use(express.json())
 
 //Use the middleware
 const allowedOrigins = process.env.ORIGINS
@@ -12,12 +15,14 @@ const allowedOrigins = process.env.ORIGINS
   : ["http://localhost:5173"];
 
 app.use(cors({origin:allowedOrigins,credentials:true}))
-app.use(express.json())
+
 app.use(cookieParser())
 
 app.get("/",(req,res)=>{
-    res.send("AI BUILDER")
+    res.send("AI BUILDERrrrrrrrrrrrrrrrr")
 })
+
+app.use("/api",router)
 
 //Centralized error handler
 app.use((err,_req,res,_next)=>{
@@ -25,7 +30,8 @@ app.use((err,_req,res,_next)=>{
     res.status(500).json({error:err.message})
 })
 
-const port=process.env.PORT || 4000;
+const port=parseInt(process.env.PORT) || 5000
+
 
 async function startServer(){
     try {
@@ -35,7 +41,6 @@ async function startServer(){
        console.log("Failed to database",error) ;
        process.exit(1)
     }
-    console.log(`Server is running at http://localhost:${port}`);
     
 }
 

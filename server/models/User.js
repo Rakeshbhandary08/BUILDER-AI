@@ -18,10 +18,11 @@ UserSchema.pre('save',async function(){
 
 //compare password method
 UserSchema.methods.comparePassword=async function (password){
-    return bcrypt.compare(password,this.password)
+    return await bcrypt.compare(password,this.password)
 }
 
 //create the user model
-const userModel=mongoose.model('User',UserSchema)
+// Export existing model or compile new one
+const userModel=mongoose.models.users || mongoose.model('users',UserSchema)
 
 export default userModel;
