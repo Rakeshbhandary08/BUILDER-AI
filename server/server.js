@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser"
 import { connectToDatabase } from "./config/db.js";
 import router from "./routes/authRoutes.js";
 
+
 const app=express();
 
 app.use(express.json())
@@ -22,7 +23,7 @@ app.get("/",(req,res)=>{
     res.send("AI BUILDERrrrrrrrrrrrrrrrr")
 })
 
-app.use("/api",router)
+app.use("/api/auth",router)
 
 //Centralized error handler
 app.use((err,_req,res,_next)=>{
