@@ -1,4 +1,9 @@
 import projectModel from "../models/Project.js";
+import crypto from "crypto"
+
+function hashContent(content){
+  return crypto.createHash("md5").update(content).digest("hex").slice(0,12)
+}
 
 //**********   POST  /api/project
 
@@ -166,5 +171,65 @@ export async function deleteProject(req, res) {
   } catch(err){
      console.log("[project failed]",err)
      return res.status(500).json({error:"Failed to deleted project"})
+  }
+}
+
+
+//*********************************/ PUT /api/projects/:id/files  ***********************************
+export async function updateProject(req,res){
+  try {
+     const {files}=req.body;
+     
+     //checking the files
+     if(!files || typeof files !== 'object'){
+       return res.status(400).json({error:"files object is required"})
+     }
+  
+     if(!req.user || !req.user.userId){
+       return res.status(401).json({error:"Unauthorized"})
+     }
+  
+     const project=await projectModel.findOne({_id:req.params.id,owner:req.user.userId})
+  
+     //Checking the availability of project
+     if(!project){
+      return res.status(404).json({error:"Project not found"})
+     }
+  
+     //Rebuild project files map with content and hashes
+     let newFiles={ ...(project.files || {})}
+     for(const [path,content] of Object.entries(files)){
+       if(typeof content === "string"){
+         newFiles[path]={content,hash:hashContent(content)}
+       }
+     }
+  
+     //save into databasee
+     project.files=newFiles
+     await project.save()
+
+     //project.files={"App.jsx":{content:"<h2>Hello world</h2>",hash:"DE2908CU7"}}
+
+     const filesObj={}; //{"App.jsx":"<h2>Hello world</h2>"}
+     for(const [path,entry] of Object.entries(project.files || {})){
+        if(entry && typeof entry.content === "string"){
+          filesObj[path]=entry.content
+        }
+     }
+
+     res.json({
+       _id: project._id,
+      name: project.name,
+      description: project.description,
+      files: filesObj,
+      messages: project.messages,
+      version: project.version,
+      createdAt: project.createdAt,
+      updatedAt:project.updatedAt
+     })
+     
+  } catch (err) {
+     console.log("[Error]",err.message)
+     return res.status(500).json({error:"Failed to update"})
   }
 }
