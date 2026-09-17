@@ -4,6 +4,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser"
 import { connectToDatabase } from "./config/db.js";
 import router from "./routes/authRoutes.js";
+import projectRouter from "./routes/projectRoutes.js";
 
 
 const app=express();
@@ -24,6 +25,7 @@ app.get("/",(req,res)=>{
 })
 
 app.use("/api/auth",router)
+app.use("/api/projects",projectRouter)
 
 //Centralized error handler
 app.use((err,_req,res,_next)=>{

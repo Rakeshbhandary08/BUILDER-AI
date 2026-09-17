@@ -5,7 +5,7 @@ function hashContent(content){
   return crypto.createHash("md5").update(content).digest("hex").slice(0,12)
 }
 
-//**********   POST  /api/project
+//**********   POST  /api/projects
 
 //create a new project from an AI Prompt
 export async function createProject(req, res) {
@@ -105,7 +105,6 @@ export async function listProjects(req, res) {
 }
 
 //***************  GET -> /api/project/:id *************************
-
 export async function getProject(req, res) {
   try {
     if (!req.user || !req.user.userId) {
@@ -148,7 +147,6 @@ export async function getProject(req, res) {
 }
 
 //***************  DELETE /api/projects/:id  ********************** */
-
 export async function deleteProject(req, res) {
   try {
     if (!req.user || !req.user.userId) {
@@ -173,7 +171,6 @@ export async function deleteProject(req, res) {
      return res.status(500).json({error:"Failed to deleted project"})
   }
 }
-
 
 //*********************************/ PUT /api/projects/:id/files  ***********************************
 export async function updateProject(req,res){
@@ -232,4 +229,63 @@ export async function updateProject(req,res){
      console.log("[Error]",err.message)
      return res.status(500).json({error:"Failed to update"})
   }
+}
+
+
+// POST /api/projects/:id/publish
+// Mark a project as publicly published.
+export async function publishProject(req,res){
+  try {
+    if(!req.user || !req.user.userId){
+      return res.status(401).json({error:"Unauthorized"})
+    }
+  
+    const project=await projectModel.findOneAndUpdate({_id:req.params.id,owner:req.user.userId},{published:true},{new:true})
+  
+    //Checking the availability of project
+    if(!project){
+      return res.status(404).json({error:"Project not found"})
+    }
+  
+    res.json({success:true,published:project.published})
+  } catch (err) {
+    console.log("[Error]",err.message)
+     return res.status(500).json({error:"Failed to published project"})
+  }
+}
+
+
+// GET /api/projects/public/:id
+// GET a publicly published project details (without auth)
+
+export async function getPublicProject(req,res){
+   try{
+
+     const project=await projectModel.findById(req.params.id)
+     if(!project){
+       return res.status(404).json({error:"Project not found"})
+     }
+
+     if(!project.published){
+        return res.status(403).json({error:"Project not found"})
+     }
+
+     const filesObj={};
+     for (const [path,entry] of (Object.entries(project.files) || {})){
+      filesObj[path]=entry.content;
+     }
+
+     return res.json({
+      _id: project._id,
+      name: project.name,
+      description: project.description,
+      files: filesObj,
+      version: project.version,
+     })
+
+   }
+   catch(err) {
+      console.log("[Failed Request]",err.message);
+      return res.status(500).json({error:"Failed to get the project"})
+   }
 }

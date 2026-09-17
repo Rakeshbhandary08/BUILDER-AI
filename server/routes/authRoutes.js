@@ -11,6 +11,6 @@ router.post("/register",register)
 router.post("/login",login)
 router.post("/logout",logout)
 router.post("/me",authMiddleware,me)
-router.post("/createProject",authMiddleware,createProject)
+
 
 export default router;
