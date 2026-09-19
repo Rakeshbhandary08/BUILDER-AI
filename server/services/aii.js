@@ -13,5 +13,21 @@ const openrouter=createOpenAI({
 
 const model=openrouter(MODEL);
 
+//Generate a single file's code
+async function generateSingleFile(file,allFiles,prompt,alreadyGeneratedFiles){
+
+}
+
+//Generate project files : plan first, then build files in order with fallback retries
+export async function generateProject(prompt,callbacks){
+     
+}
+
+export async function reviseProject(prompt,manifest,relevantFiles,recentMessages){
+
+}
+
+
+
 
 
