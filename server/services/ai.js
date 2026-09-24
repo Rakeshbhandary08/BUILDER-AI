@@ -1,7 +1,5 @@
-
 //This file is your AI Generation Engine. It is responsible for creating a complete web app 
 // from scratch and updating existing projects using an AI model.
-
 
 import {createOpenAI} from '@ai-sdk/openai'
 import { generateObject } from 'ai';
@@ -246,3 +244,5 @@ export async function reviseProject(prompt, manifest, relevantFiles, recentMessa
     }
     return rawParsed;
 }
+
+
