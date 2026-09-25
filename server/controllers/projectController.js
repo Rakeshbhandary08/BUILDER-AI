@@ -94,7 +94,7 @@ async function runBackgroundGeneration(projectId,prompt) {
       },
       onFileStart:async(path)=>{
         console.log(`[Background AI] Starting file ${path} for project ${projectId}`);
-        await Project.findByIdAndUpdate(projectId,{currentFile:path})
+        await projectModel.findByIdAndUpdate(projectId,{currentFile:path})
       },
       onFileComplete:async (path,code)=>{
          console.log(`[Background AI] Finished file ${path} for project ${projectId}`);
@@ -108,12 +108,17 @@ async function runBackgroundGeneration(projectId,prompt) {
           project.messages.push({
             role:"assistant",
             content:`Created file "${path}"`,
-            timeStamp:new Date()
+            timestamp:new Date()
           });
           project.currentFile=null;
+
+          // Notify Mongoose of updates on Mixed/nested properties
           project.markModified("files");
+          project.markModified("filesGenerated");
+          project.markModified("messages");
+         
           await project.save();
-          await project.save();
+         
          }
       }
      })
@@ -329,7 +334,6 @@ export async function publishProject(req,res){
      return res.status(500).json({error:"Failed to published project"})
   }
 }
-
 
 // GET /api/projects/public/:id
 // GET a publicly published project details (without auth)
