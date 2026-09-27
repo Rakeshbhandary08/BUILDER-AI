@@ -12,9 +12,7 @@ const app=express();
 app.use(express.json())
 
 //Use the middleware
-const allowedOrigins = process.env.ORIGINS
-  ? process.env.ORIGINS.split(",")
-  : ["http://localhost:5173"];
+const allowedOrigins = process.env.ORIGINS || "http://localhost:5173";
 
 app.use(cors({origin:allowedOrigins,credentials:true}))
 
