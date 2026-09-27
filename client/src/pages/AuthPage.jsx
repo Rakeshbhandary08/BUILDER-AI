@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import LoginLeft from '../components/LoginLeft'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { EyeIcon, EyeOff, EyeOffIcon, Loader2Icon } from 'lucide-react'
 import { useAppContext } from '../context/AppContext'
 
 const AuthPage = ({mode}) => {
-  const navigate=useNavigate()
+
   const {login,register}=useAppContext()
 
   const handleSubmit=async (e)=>{
@@ -21,6 +21,7 @@ const AuthPage = ({mode}) => {
       else{
         await register(name,email,password)
       }
+      
      }
      catch(err){
       setError(err.message || (mode === "login" ? "Invalid email or password" : "Registeration Failed"))
@@ -30,7 +31,7 @@ const AuthPage = ({mode}) => {
   }
 
   const [error,setError]=useState("")
-  const [loading,setLoading]=useState("")
+  const [loading,setLoading]=useState(false)
   const isLogin=mode ==="login"
 
   const [name,setName]=useState("");

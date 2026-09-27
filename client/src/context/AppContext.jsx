@@ -1,10 +1,11 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import  { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import api from "../api/api";
 import toast from "react-hot-toast"
 import {  useNavigate } from "react-router-dom";
 import debounce from "lodash.debounce";
 
 const AppContext=createContext(undefined);
+
 
 export function AppContextProvider({children}){
 
@@ -182,7 +183,7 @@ export function AppContextProvider({children}){
            console.log("Failed to delete Project",err);
            toast.error("Failed to delete project");
          }
-       },[user]
+       },[user, activeProject, navigate]
     )
 
     //FUnction to handle Chatting things with AI
@@ -225,7 +226,7 @@ export function AppContextProvider({children}){
     }
 
     
-    const debouncedSave=React.useMemo(
+    const debouncedSave=useMemo(
       ()=>debounce(async(files,id)=>{
         try{
            await api.put(`/api/projects/${id}/files`,{files})
