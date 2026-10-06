@@ -7,7 +7,7 @@ const LoginLeft = () => {
       {/* HEADING AND TITLE */}
       <div className='flex gap-2 items-center'>
         <img src="/logo.svg" alt="Logo" className="size-9.5" />
-        <span className='text-4xl font-medium text-white'>Builder AI</span>
+        <span className='text-4xl font-medium text-white'>Builder AII</span>
       </div>
       
        {/* DESCRIPTION AND COPYRIGHT */}

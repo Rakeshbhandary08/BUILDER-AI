@@ -5,7 +5,8 @@ import { EyeIcon, EyeOff, EyeOffIcon, Loader2Icon } from 'lucide-react'
 import { useAppContext } from '../context/AppContext'
 
 const AuthPage = ({mode}) => {
-
+  
+  //Authentication
   const {login,register}=useAppContext()
 
   const handleSubmit=async (e)=>{
