@@ -13,7 +13,7 @@ export function AppContextProvider({children}){
 
     //Auth States -------
     const [user,setUser]=useState(null);
-    const [loadingUser,setLoadingUser]=useState(false);
+    const [loadingUser,setLoadingUser]=useState(true);
 
     //States for Aleady build projects
     const [projects,setProjects]=useState([]);

@@ -8,6 +8,7 @@ const JWT_SECRET=process.env.JWT_SECRET || "fallback_secret"
 //Helper function to set cookie
 const setSessionCookie=(res,payload)=>{
     const token=jwt.sign(payload,JWT_SECRET,{expiresIn:"30d"})
+    console.log(token)
     const isProduction=process.env.NODE_ENV  === "production"
     res.cookie('token',token,{
         httpOnly:true,
