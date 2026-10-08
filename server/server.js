@@ -34,7 +34,7 @@ app.use(cors({
 app.use(cookieParser())
 
 app.get("/",(req,res)=>{
-    res.send("AI BUILDERrrrrrrrrrrrrrrrr")
+    res.send("AI BUILDER")
 })
 
 app.use("/api/auth",router)
